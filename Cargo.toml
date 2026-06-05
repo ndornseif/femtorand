@@ -1,6 +1,6 @@
 [package]
 name = "femtorand"
-description = "High performance, no-std random number generation on a tiny footpring."
+description = "High performance, no-std random number generation on a tiny footprint."
 version = "1.0.0"
 edition = "2024"
 license = "MIT OR Apache-2.0"
@@ -12,22 +12,17 @@ categories = ["algorithms", "no-std"]
 [features]
 default = ["float"]
 float = []
+osseed = ["dep:getrandom"]
 
 [package.metadata.docs.rs] 
 all-features = true 
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
+getrandom = { version = "0.3.4", optional = true }
 
 [dev-dependencies]
 criterion = "0.7.0"
-
-[[bench]]
-name = "bench_samplers"
-harness = false
-
-
-
 
 [lints.rust]
 forgetting_references = "warn"

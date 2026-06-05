@@ -11,7 +11,7 @@ use crate::traits::{CoreRNG, FloatRNG, SeekableRNG};
 /// derived from the `WyHash` hash function [^1].  
 /// Whether [`WyRand`] or [`Lehmer64`] are faster is use case and architecture dependent,
 /// if in doubt, benchmark.  
-/// This generator allows freely moving to any position in the output steam
+/// This generator allows freely moving to any position in the output stream
 /// via the [`SeekableRNG`] trait.
 /// <div class="warning">WyRand is NOT cryptographically secure.</div>
 ///
@@ -33,7 +33,7 @@ pub struct WyRand {
     /// The generators internal state.
     /// For each step constant [`Self::WY0`] is added to the state.
     /// The value returned by [`Self::next()`] is the current state fed
-    /// into the `WyHash` multipy and mix function.
+    /// into the `WyHash` multiply and mix function.
     state: u64,
 }
 
@@ -78,7 +78,7 @@ mod tests {
     use super::*;
 
     #[test]
-    /// Check that seeking in output steam works with large values of `delta`.
+    /// Check that seeking in output stream works with large values of `delta`.
     fn test_wide_seek() {
         let mut prng = WyRand::new(0xDEADBEEF);
         let n_one = prng.next();

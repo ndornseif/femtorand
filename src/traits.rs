@@ -1,11 +1,13 @@
-//! Define traits that a random number generator many implement.
+//! Define traits that a random number generator may implement.
 
 /// One over 2 to the 24th power. Equivalent to 1.0 / (1u32 << 24) as f32.  
 /// Exact float representation: 5.9604644775390625E-8
+#[cfg(feature = "float")]
 const INV_2POW24: f32 = f32::from_bits(0x3380_0000);
 
-/// One over 2 to the 53th power. Equivalent to 1.0 / (1u64 << 53) as f64.  
+/// One over 2 to the 53rd power. Equivalent to 1.0 / (1u64 << 53) as f64.  
 /// Exact double representation: 1.1102230246251565404236316680908203125E-16
+#[cfg(feature = "float")]
 const INV_2POW53: f64 = f64::from_bits(0x3ca0_0000_0000_0000);
 
 /// General trait for pseudorandom number generators.
@@ -14,6 +16,25 @@ const INV_2POW53: f64 = f64::from_bits(0x3ca0_0000_0000_0000);
 pub trait CoreRNG: Sized {
     /// Initialize new generator with specified seed.
     fn new(seed: u64) -> Self;
+
+    /// Initialize a new generator and seed from OS entropy source.
+    ///
+    /// This function requires the `osseed` crate feature to be enabled.
+    /// The OS entropy source is read using the [`getrandom`] crate.
+    ///
+    /// # Usage
+    /// ```
+    /// use femtorand::{WyRand, CoreRNG};
+    /// let mut prng_one = WyRand::seeded().unwrap();
+    /// let mut prng_two = WyRand::seeded().unwrap();
+    /// assert_ne!(prng_one.generate_int::<u64>(), prng_two.generate_int::<u64>());
+    /// ```
+    #[cfg(feature = "osseed")]
+    #[cfg_attr(docsrs, doc(cfg(feature = "osseed")))]
+    fn seeded() -> Result<Self, getrandom::Error> {
+        let seed = getrandom::u64()?;
+        Ok(Self::new(seed))
+    }
 
     /// Generate a pseudorandom u64.
     ///
@@ -33,9 +54,9 @@ pub trait CoreRNG: Sized {
 
     /// Generate a pseudorandom integer in the interval `[0; max_out)`.
     ///
-    /// If `max_out` is zero or one, the output will allways be zero.
+    /// If `max_out` is zero or one, the output will always be zero.
     /// This function is intended for library internal use.
-    /// Prefeer [`Self::generate_int_lim`].
+    /// Prefer [`Self::generate_int_lim`].
     #[allow(clippy::cast_possible_truncation)]
     #[doc(hidden)]
     fn next_lim_u64(&mut self, max_out: u64) -> u64 {
@@ -54,9 +75,9 @@ pub trait CoreRNG: Sized {
 
     /// Generate a pseudorandom integer in the interval `[0; max_out)`.
     ///
-    /// If `max_out` is zero or one, the output will allways be zero.
+    /// If `max_out` is zero or one, the output will always be zero.
     /// This function is intended for library internal use.
-    /// Prefeer [`Self::generate_int_lim`].
+    /// Prefer [`Self::generate_int_lim`].
     #[allow(clippy::cast_possible_truncation)]
     #[doc(hidden)]
     fn next_lim_u32(&mut self, max_out: u32) -> u32 {
@@ -73,7 +94,7 @@ pub trait CoreRNG: Sized {
         (full >> 32) as u32
     }
 
-    /// Reset to inital state with a given seed, equivalent to replacing with `Self::new(seed)`.
+    /// Reset to initial state with a given seed, equivalent to replacing with `Self::new(seed)`.
     ///
     /// # Usage
     /// ```
@@ -116,7 +137,7 @@ pub trait CoreRNG: Sized {
     /// Generate a pseudorandom integer in the interval `[0; max_out)`.
     ///
     /// Advances the generator one step.  
-    /// Setting `max_out` to a value less than two will allways return zero.  
+    /// Setting `max_out` to a value less than two will always return zero.  
     /// Based on lemires algorithm[^1].
     ///
     /// # Usage
@@ -150,7 +171,7 @@ pub trait CoreRNG: Sized {
     /// Generate a pseudorandom integer in the interval `[min_out; max_out)`.
     ///
     /// Advances the generator one step.
-    /// If `max_out - min_out` is less than two, this function will allways return `min_out`.
+    /// If `max_out - min_out` is less than two, this function will always return `min_out`.
     ///
     /// # Usage
     /// ```
@@ -178,7 +199,7 @@ pub trait CoreRNG: Sized {
         min_out + self.generate_int_lim::<T>(delta)
     }
 
-    /// Generate a pseudrandom u128.
+    /// Generate a pseudorandom u128.
     ///
     /// This is handled as a special case since the generator
     /// returns 64 bits per iteration, so this function
@@ -203,7 +224,7 @@ pub trait CoreRNG: Sized {
         (upper << 64) | lower
     }
 
-    /// Generate a pseudrandom i128.
+    /// Generate a pseudorandom i128.
     ///
     /// This is handled as a special case since the generator
     /// returns 64 bits per iteration, so this function
@@ -267,7 +288,7 @@ pub trait CoreRNG: Sized {
     /// Fill a slice with pseudorandom integers.
     ///
     /// Advances the generator one step for each element in `destination`.  
-    /// To generate single byte values prefer [`Self::fill_bytes`],
+    /// To generate [`u8`] values prefer [`Self::fill_bytes`],
     /// for slices longer than about eight bytes it is faster.
     ///
     /// # Usage
@@ -284,8 +305,9 @@ pub trait CoreRNG: Sized {
         }
     }
 
-    /// 
+    /// Randomly select element from slice.
     ///
+    /// All elements have equal probability to be chosen.
     /// Advances the generator one step.
     ///
     /// # Usage
@@ -307,7 +329,7 @@ pub trait CoreRNG: Sized {
 /// Implemented for RNGs that allow skipping to different positions in the output
 /// without needing to generate all the values in between.
 pub trait SeekableRNG: CoreRNG {
-    /// Advance the generator state by the specified number of steps.
+    /// Advance the generator state by `delta` steps.
     ///
     /// # Usage
     /// ```
@@ -320,7 +342,7 @@ pub trait SeekableRNG: CoreRNG {
     /// ```
     fn move_state_forwards(&mut self, delta: u64);
 
-    /// Reverse the generator state by the specified number of steps.
+    /// Reverse the generator state by `delta` steps.
     ///
     /// # Usage
     /// ```
@@ -338,14 +360,14 @@ pub trait SeekableRNG: CoreRNG {
 /// Can be implemented by all generators that implement [`CoreRNG`] but is only
 /// used when the `float` crate feature is enabled.
 #[cfg(feature = "float")]
-#[cfg_attr(docsrs, doc(cfg(feature = "ﬂoat")))]
+#[cfg_attr(docsrs, doc(cfg(feature = "float")))]
 //#[doc(cfg(feature = "float"))]
 pub trait FloatRNG: CoreRNG {
     /// Generate pseudorandom [`f32`] in the interval `[0; 1)`.
     ///
     /// Advances the generator one step.
     /// The resulting float has 24 bits of effective entropy.
-    /// The ditribution is uniform.
+    /// The distribution is uniform.
     ///
     /// # Usage
     /// ```
@@ -364,7 +386,7 @@ pub trait FloatRNG: CoreRNG {
     ///
     /// Advances the generator one step.
     /// The resulting double has 53 bits of effective entropy.
-    /// The ditribution is uniform.
+    /// The distribution is uniform.
     ///
     /// # Usage
     /// ```
@@ -378,7 +400,7 @@ pub trait FloatRNG: CoreRNG {
         (self.next() >> 11) as f64 * INV_2POW53
     }
 
-    /// Generate pseudorandom [`f32`] that can take any possible value, including NaN, inf, ect.  
+    /// Generate pseudorandom [`f32`] that can take any possible value, including NaN, inf, etc.  
     ///
     /// Advances the generator one step.
     /// All possible [`f32`] values are equally likely, meaning the distribution is not uniform
@@ -396,7 +418,7 @@ pub trait FloatRNG: CoreRNG {
         f32::from_bits(self.next() as u32)
     }
 
-    /// Generate pseudorandom [`f64`] that can take any possible value, including NaN, inf, ect.  
+    /// Generate pseudorandom [`f64`] that can take any possible value, including NaN, inf, etc.  
     ///
     /// Advances the generator one step.
     /// All possible [`f64`] values are equally likely, meaning the distribution is not uniform
@@ -504,6 +526,8 @@ mod tests {
     use crate::wyrand::WyRand;
 
     #[test]
+    /// We verify that the float generation algorithm
+    /// will always generate outputs less than one.
     fn test_float_distribuition() {
         assert!((u64::MAX >> 11) as f64 * INV_2POW53 < 1.0);
         assert!((u32::MAX >> 8) as f32 * INV_2POW24 < 1.0);

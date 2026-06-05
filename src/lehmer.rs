@@ -45,7 +45,7 @@ impl Lehmer64 {
     /// Sets the number of values discarded after instantiating a generator.
     pub const WARMUP_ITERATIONS: usize = 4;
     /// Sets the seed used when instantiating a generator using default.  
-    /// This particular value was randomly choosed, it only needs to be nonzero.
+    /// This particular value was randomly chosen, it only needs to be nonzero.
     pub const DEFAULT_SEED: u64 = 0x2FB6_A490_3F74_5A36;
 
     /// Behaves like [`Self::new`] but without discarding the first set of values.
@@ -59,7 +59,7 @@ impl Lehmer64 {
     /// let mut cold_prng = Lehmer64::new_without_warmup(1);
     /// let mut slice = [0_u16; 4];
     /// cold_prng.fill::<u16>(&mut slice);
-    /// // Notice the fist output value is zero.
+    /// // Notice the first output value is zero.
     /// assert_eq!([0x0, 0x65B4, 0x58D0, 0xB969], slice);
     /// // A generator instantiated normally with warmup is four steps ahead.
     /// let mut warmed_prng = Lehmer64::new(1);
@@ -105,7 +105,7 @@ impl CoreRNG for Lehmer64 {
 impl FloatRNG for Lehmer64 {}
 
 impl Default for Lehmer64 {
-    /// Initalize with default nonzero seed [`Self::DEFAULT_SEED`].
+    /// Initialize with default nonzero seed [`Self::DEFAULT_SEED`].
     ///
     /// This is done to prevent the generator from only generating
     /// zero as output with a zero seed.
