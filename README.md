@@ -1,6 +1,6 @@
 # femtorand
 
-[![dependency status](https://deps.rs/crate/femtorand/1.0.1/status.svg)](https://deps.rs/crate/femtorand/1.0.1)
+[![dependency status](https://deps.rs/crate/femtorand/1.0.2/status.svg)](https://deps.rs/crate/femtorand/1.0.2)
 [![licence](https://img.shields.io/crates/l/femtorand)](https://crates.io/crates/femtorand)
 [![docs](https://img.shields.io/docsrs/femtorand/latest)](https://docs.rs/femtorand/1.0.2/femtorand/)
 [![size](https://img.shields.io/crates/size/femtorand)](https://crates.io/crates/femtorand)
