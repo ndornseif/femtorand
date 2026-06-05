@@ -1,9 +1,9 @@
 # femtorand
 
 [![dependency status](https://deps.rs/crate/femtorand/1.0.1/status.svg)](https://deps.rs/crate/femtorand/1.0.1)
-[![licence](https://img.shields.io/crates/l/femtorand)]
+[![licence](https://img.shields.io/crates/l/femtorand)](https://crates.io/crates/femtorand)
 [![docs](https://img.shields.io/docsrs/femtorand/latest)](https://docs.rs/femtorand/1.0.2/femtorand/)
-[![size](https://img.shields.io/crates/size/femtorand)]
+[![size](https://img.shields.io/crates/size/femtorand)](https://crates.io/crates/femtorand)
 [![crates.io](https://img.shields.io/crates/v/femtorand)](https://crates.io/crates/femtorand)
 
 High performance random number generators for use in `no_std` environments.  
