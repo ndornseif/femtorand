@@ -1,9 +1,9 @@
 [package]
 name = "femtorand"
 description = "High performance, no-std random number generation on a tiny footprint."
-version = "1.0.1"
+version = "1.0.2"
 edition = "2024"
-rust-version = "1.85"
+rust-version = "1.87"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/ndornseif/femtorand/"
 readme = "README.md"
@@ -20,7 +20,7 @@ all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
-getrandom = { version = "0.3.4", optional = true }
+getrandom = { version = "0.4.2", optional = true }
 
 [dev-dependencies]
 
