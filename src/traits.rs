@@ -30,7 +30,6 @@ pub trait CoreRNG: Sized {
     /// assert_ne!(prng_one.generate_int::<u64>(), prng_two.generate_int::<u64>());
     /// ```
     #[cfg(feature = "osseed")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "osseed")))]
     fn seeded() -> Result<Self, getrandom::Error> {
         let seed = getrandom::u64()?;
         Ok(Self::new(seed))
@@ -215,7 +214,7 @@ pub trait CoreRNG: Sized {
     /// assert_eq!(0xA0A3_1F69_8FC9_9FBD_E083_7439_EEFC_8EC4, prng.generate_u128());
     /// // Moving back only one step causes makes the original lower half the new upper half.
     /// prng.move_state_backwards(1);
-    /// assert_eq!(0xE083_7439_EEFC_8EC4_bE5E_8436_DD1D_B295, prng.generate_u128());
+    /// assert_eq!(0xE083_7439_EEFC_8EC4_BE5E_8436_DD1D_B295, prng.generate_u128());
     /// ```
     #[inline]
     fn generate_u128(&mut self) -> u128 {
@@ -360,8 +359,6 @@ pub trait SeekableRNG: CoreRNG {
 /// Can be implemented by all generators that implement [`CoreRNG`] but is only
 /// used when the `float` crate feature is enabled.
 #[cfg(feature = "float")]
-#[cfg_attr(docsrs, doc(cfg(feature = "float")))]
-//#[doc(cfg(feature = "float"))]
 pub trait FloatRNG: CoreRNG {
     /// Generate pseudorandom [`f32`] in the interval `[0; 1)`.
     ///

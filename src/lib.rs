@@ -97,15 +97,14 @@
 
 #![no_std]
 
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 
 #[doc = include_str!("../README.md")]
 #[cfg(doctest)]
 pub struct ReadmeDoctests;
 
 
-// Compiling docs with optional annotation
-//  RUSTDOCFLAGS="--cfg docsrs" cargo +nightly doc --features float,osseed
+
 mod lehmer;
 mod traits;
 mod wyrand;

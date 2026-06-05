@@ -3,6 +3,7 @@ name = "femtorand"
 description = "High performance, no-std random number generation on a tiny footprint."
 version = "1.0.0"
 edition = "2024"
+rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/ndornseif/femtorand/"
 readme = "README.md"
@@ -14,8 +15,8 @@ default = ["float"]
 float = []
 osseed = ["dep:getrandom"]
 
-[package.metadata.docs.rs] 
-all-features = true 
+[package.metadata.docs.rs]
+all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
