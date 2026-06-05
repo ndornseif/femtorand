@@ -23,7 +23,6 @@ rustdoc-args = ["--cfg", "docsrs"]
 getrandom = { version = "0.3.4", optional = true }
 
 [dev-dependencies]
-criterion = "0.7.0"
 
 [lints.rust]
 forgetting_references = "warn"
